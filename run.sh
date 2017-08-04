@@ -63,6 +63,10 @@ apt-get -y upgrade
 apt-get -y dist-upgrade
 apt-get -y autoremove
 
+# Install basic utility software
+apt-get -y install wget dnsutils man-db git nano bzip2 screen dos2unix mlocate
+updatedb
+
 
 
 # Report completion
