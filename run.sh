@@ -92,6 +92,11 @@ mkdir -p /var/www/cyipt/
 chown -R cyipt.rollout /var/www/cyipt/
 chmod -R g+ws /var/www/cyipt/
 
+# Add VirtualHost
+cp -pr $ScriptHome/apache.conf /etc/apache2/sites-available/cyipt.conf
+a2ensite cyipt
+service apache2 restart
+
 
 
 # Report completion
