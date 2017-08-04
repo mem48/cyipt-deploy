@@ -87,6 +87,11 @@ apt-get -y install libapache2-mod-php7.1
 apt-get -y install postgresql postgresql-contrib
 apt-get -y install php7.1-pgsql
 
+# Create site files directory
+mkdir -p /var/www/cyipt/
+chown -R cyipt.rollout /var/www/cyipt/
+chmod -R g+ws /var/www/cyipt/
+
 
 
 # Report completion
