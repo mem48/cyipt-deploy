@@ -76,6 +76,8 @@ a2enmod headers
 a2enmod ssl
 service apache2 restart
 
+# Install PostgreSQL
+apt-get -y install postgresql postgresql-contrib
 
 
 
