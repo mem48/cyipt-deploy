@@ -90,13 +90,21 @@ apt-get -y install php7.1-pgsql
 # Create site files directory
 mkdir -p /var/www/cyipt/
 chown -R cyipt.rollout /var/www/cyipt/
-chmod -R g+ws /var/www/cyipt/
+chmod g+ws /var/www/cyipt/
+
 
 # Add VirtualHost
 cp -pr $ScriptHome/apache.conf /etc/apache2/sites-available/cyipt.conf
 a2ensite cyipt
 service apache2 restart
 
+# Clone or update repo
+if [ ! -d /var/www/cyipt/.git/ ]; then
+	sudo -u cyipt  git clone https://github.com/cyipt/cyipt.github.io.git /var/www/cyipt/
+else
+	sudo -u cyipt  git -C /var/www/cyipt/ pull
+fi
+chmod -R g+w /var/www/cyipt/
 
 
 # Report completion
