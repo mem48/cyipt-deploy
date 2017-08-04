@@ -76,9 +76,16 @@ a2enmod headers
 a2enmod ssl
 service apache2 restart
 
+# Install PHP (7.1, using the Ondřej Surý -maintained packages)
+apt-get install -y python-software-properties
+add-apt-repository -y ppa:ondrej/php
+apt-get update -y
+apt-get -y install php7.1 php7.1-cli php7.1-mbstring
+apt-get -y install libapache2-mod-php7.1
+
 # Install PostgreSQL
 apt-get -y install postgresql postgresql-contrib
-
+apt-get -y install php7.1-pgsql
 
 
 
