@@ -37,9 +37,7 @@ do
 done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 SCRIPTDIRECTORY=$DIR
-
-# Use this to remove the ../ to get the repository root; assumes the script is always down one level
-ScriptHome=$(readlink -f "${SCRIPTDIRECTORY}/..")
+ScriptHome=$(readlink -f "${SCRIPTDIRECTORY}/")
 
 # Define the location of the credentials file relative to script directory
 configFile=$ScriptHome/.config.sh
