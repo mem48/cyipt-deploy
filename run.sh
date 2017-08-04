@@ -92,7 +92,6 @@ mkdir -p /var/www/cyipt/
 chown -R cyipt.rollout /var/www/cyipt/
 chmod g+ws /var/www/cyipt/
 
-
 # Add VirtualHost
 cp -pr $ScriptHome/apache.conf /etc/apache2/sites-available/cyipt.conf
 a2ensite cyipt
@@ -105,6 +104,11 @@ else
 	sudo -u cyipt  git -C /var/www/cyipt/ pull
 fi
 chmod -R g+w /var/www/cyipt/
+
+# Add cronjob to update from Git regularly
+cp $ScriptHome/cyipt.cron /etc/cron.d/cyipt
+chown root.root /etc/cron.d/cyipt
+chmod 644 /etc/cron.d/cyipt
 
 
 # Report completion
