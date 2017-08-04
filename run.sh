@@ -67,6 +67,17 @@ apt-get -y autoremove
 apt-get -y install wget dnsutils man-db git nano bzip2 screen dos2unix mlocate
 updatedb
 
+# Install Apache (2.4)
+apt-get -y install apache2
+
+# Enable core Apache modules
+a2enmod rewrite
+a2enmod headers
+a2enmod ssl
+service apache2 restart
+
+
+
 
 
 # Report completion
