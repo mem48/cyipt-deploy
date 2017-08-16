@@ -88,13 +88,15 @@ apt-get -y install postgresql postgresql-contrib
 apt-get -y install php7.1-pgsql
 
 # Install PostgreSQL database and user
-su - postgres -c "psql -tAc \"SELECT 1 FROM pg_roles WHERE rolname='cyipt';\"" | grep -q 1 || su - postgres -c "psql -c \"CREATE USER cyipt WITH PASSWORD '${password}';\""
-su - postgres -c "psql -tAc \"SELECT 1 from pg_catalog.pg_database where datname = 'cyipt';\"" | grep -q 1 || su - postgres -c "createdb -O cyipt cyipt"
-su - postgres -c "psql -tAc \"GRANT ALL PRIVILEGES ON DATABASE cyipt TO cyipt;\""
+database=cyipt
+username=cyipt
+su - postgres -c "psql -tAc \"SELECT 1 FROM pg_roles WHERE rolname='${username}';\"" | grep -q 1 || su - postgres -c "psql -c \"CREATE USER ${username} WITH PASSWORD '${password}';\""
+su - postgres -c "psql -tAc \"SELECT 1 from pg_catalog.pg_database where datname = '${database}';\"" | grep -q 1 || su - postgres -c "createdb -O ${username} ${database}"
+su - postgres -c "psql -tAc \"GRANT ALL PRIVILEGES ON DATABASE ${database} TO ${username};\""
 
 # Install PostGIS (Postgres GIS extension)
 apt-get -y install postgis
-su - postgres -c "psql -d cyipt -tAc \"CREATE EXTENSION postgis;\""
+su - postgres -c "psql -d ${database} -tAc \"CREATE EXTENSION postgis;\""
 
 # Create site files directory
 mkdir -p /var/www/cyipt/
