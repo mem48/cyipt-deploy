@@ -88,6 +88,7 @@ apt-get -y install postgresql postgresql-contrib
 apt-get -y install php7.1-pgsql
 
 # Install PostgreSQL database and user
+# Check connectivity using: `psql -h localhost cyipt cyipt -W` (where this is `psql database user`); -h localhost is needed to avoid "Peer authentication failed" error
 database=cyipt
 username=cyipt
 su - postgres -c "psql -tAc \"SELECT 1 FROM pg_roles WHERE rolname='${username}';\"" | grep -q 1 || su - postgres -c "psql -c \"CREATE USER ${username} WITH PASSWORD '${password}';\""
