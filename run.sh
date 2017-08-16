@@ -88,6 +88,11 @@ apt-get -y install postgresql postgresql-contrib
 apt-get -y install postgis
 apt-get -y install php7.1-pgsql
 
+# Install PostgreSQL database and user
+su - postgres -c "psql -tAc \"SELECT 1 FROM pg_roles WHERE rolname='cyipt';\"" | grep -q 1 || su - postgres -c "psql -c \"CREATE USER cyipt WITH PASSWORD '${password}';\""
+su - postgres -c "psql -tAc \"SELECT 1 from pg_catalog.pg_database where datname = 'cyipt';\"" | grep -q 1 || su - postgres -c "createdb -O cyipt cyipt"
+su - postgres -c "psql -tAc \"GRANT ALL PRIVILEGES ON DATABASE cyipt TO cyipt;\""
+
 # Create site files directory
 mkdir -p /var/www/cyipt/
 chown -R cyipt.rollout /var/www/cyipt/
