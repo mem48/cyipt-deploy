@@ -83,8 +83,9 @@ apt-get update -y
 apt-get -y install php7.1 php7.1-cli php7.1-mbstring
 apt-get -y install libapache2-mod-php7.1
 
-# Install PostgreSQL
+# Install PostgreSQL and PostGIS
 apt-get -y install postgresql postgresql-contrib
+apt-get -y install postgis
 apt-get -y install php7.1-pgsql
 
 # Create site files directory
