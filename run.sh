@@ -93,7 +93,9 @@ database=cyipt
 username=cyipt
 su - postgres -c "psql -tAc \"SELECT 1 FROM pg_roles WHERE rolname='${username}';\"" | grep -q 1 || su - postgres -c "psql -c \"CREATE USER ${username} WITH PASSWORD '${password}';\""
 su - postgres -c "psql -tAc \"SELECT 1 from pg_catalog.pg_database where datname = '${database}';\"" | grep -q 1 || su - postgres -c "createdb -O ${username} ${database}"
-su - postgres -c "psql -tAc \"GRANT ALL PRIVILEGES ON DATABASE ${database} TO ${username};\""
+# Privileges should not be needed: "By default all public scemas will be available for regular (non-superuser) users." - https://stackoverflow.com/a/42748915/180733
+# See also note that privileges (if relevant) should be on the table, not the database: https://stackoverflow.com/a/15522548/180733
+#su - postgres -c "psql -tAc \"GRANT ALL PRIVILEGES ON DATABASE ${database} TO ${username};\""
 
 # Install PostGIS (Postgres GIS extension)
 apt-get -y install postgis
