@@ -113,7 +113,7 @@ service apache2 restart
 
 # Clone or update repo
 if [ ! -d /var/www/cyipt/.git/ ]; then
-	sudo -u cyipt  git clone https://github.com/cyipt/cyipt.github.io.git /var/www/cyipt/
+	sudo -u cyipt  git clone https://github.com/cyipt/cyipt-website.git /var/www/cyipt/
 else
 	sudo -u cyipt  git -C /var/www/cyipt/ pull
 fi
