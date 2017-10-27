@@ -111,6 +111,21 @@ cp -pr $ScriptHome/apache.conf /etc/apache2/sites-available/cyipt.conf
 a2ensite cyipt
 service apache2 restart
 
+# Let's Encrypt (free SSL certs), which will create a cron job
+# See: https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-14-04
+# See: https://certbot.eff.org/docs/using.html
+add-apt-repository -y ppa:certbot/certbot
+apt-get update
+apt-get -y install python-certbot-apache
+
+# Create an HTTPS cert (without auto installation in Apache)
+if [ ! -f /etc/letsencrypt/live/www.cyipt.bike/fullchain.pem ]; then
+	email=info@
+	email+=cyclestreets.net
+	certbot --agree-tos --no-eff-email certonly --keep-until-expiring --webroot -w /var/www/cyipt/ --email $email -d www.cyipt.bike -d cyipt.bike
+	service apache2 restart
+fi
+
 # Clone or update repo
 if [ ! -d /var/www/cyipt/.git/ ]; then
 	sudo -u cyipt  git clone https://github.com/cyipt/cyipt-website.git /var/www/cyipt/
