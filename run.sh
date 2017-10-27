@@ -124,6 +124,17 @@ cp $ScriptHome/cyipt.cron /etc/cron.d/cyipt
 chown root.root /etc/cron.d/cyipt
 chmod 644 /etc/cron.d/cyipt
 
+# Enable firewall
+apt-get -y install ufw
+ufw logging low
+ufw --force reset
+ufw --force enable
+ufw default deny
+ufw allow ssh
+ufw allow http
+ufw allow http
+ufw reload
+ufw status verbose
 
 # Report completion
 echo "#	Installing CyIPT system completed"
