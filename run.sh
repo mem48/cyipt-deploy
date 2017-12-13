@@ -129,8 +129,10 @@ fi
 # Clone or update repo
 if [ ! -d /var/www/cyipt/.git/ ]; then
 	sudo -u cyipt  git clone https://github.com/cyipt/cyipt-website.git /var/www/cyipt/
+	sudo -u cyipt  git clone https://github.com/cyclestreets/Leaflet.LayerViewer.git /var/www/cyipt/js/lib/Leaflet.LayerViewer/
 else
 	sudo -u cyipt  git -C /var/www/cyipt/ pull
+	sudo -u cyipt  git -C /var/www/cyipt/js/lib/Leaflet.LayerViewer/ pull
 fi
 chmod -R g+w /var/www/cyipt/
 
