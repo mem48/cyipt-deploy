@@ -141,6 +141,23 @@ cp $ScriptHome/cyipt.cron /etc/cron.d/cyipt
 chown root.root /etc/cron.d/cyipt
 chmod 644 /etc/cron.d/cyipt
 
+# Add mailserver
+# Exim
+# Mail Transfer Agent (MTA); NB load before Python otherwise Ubuntu will choose Postfix
+# See: https://help.ubuntu.com/lts/serverguide/exim4.html and http://manpages.ubuntu.com/manpages/hardy/man8/update-exim4.conf.8.html
+# NB The config here is currently Debian/Ubuntu-specific
+apt-get -y install exim4
+if [ ! -e /etc/exim4/update-exim4.conf.conf.original ]; then
+	cp -pr /etc/exim4/update-exim4.conf.conf /etc/exim4/update-exim4.conf.conf.original
+	# NB These will deliberately overwrite any existing config; it is assumed that once set, the config will only be changed via this setup script (as otherwise it is painful during testing)
+	sed -i "s/dc_eximconfig_configtype=.*/dc_eximconfig_configtype='internet'/" /etc/exim4/update-exim4.conf.conf
+	sed -i "s/dc_other_hostnames=.*/dc_other_hostnames='cyipt.bike'/" /etc/exim4/update-exim4.conf.conf
+	sed -i "s/dc_local_interfaces=.*/dc_local_interfaces=''/" /etc/exim4/update-exim4.conf.conf
+	update-exim4.conf
+	service exim4 start
+fi
+echo "IMPORTANT: Aliases need to be added to /etc/aliases"
+
 # Enable firewall
 apt-get -y install ufw
 ufw logging low
@@ -150,6 +167,7 @@ ufw default deny
 ufw allow ssh
 ufw allow http
 ufw allow http
+ufw allow smtp
 ufw reload
 ufw status verbose
 
