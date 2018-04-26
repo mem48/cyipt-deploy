@@ -119,12 +119,12 @@ apt-get update
 apt-get -y install python-certbot-apache
 
 # Create an HTTPS cert (without auto installation in Apache)
-if [ ! -f /etc/letsencrypt/live/www.wisemover.co.uk/fullchain.pem ]; then
-	email=malcolmmorgan02@
-	email+=gmail.com
-	certbot --agree-tos --no-eff-email certonly --keep-until-expiring --webroot -w /var/www/wisemove/ --email $email -d www.wisemover.co.uk -d wisemover.co.uk
-	service apache2 restart
-fi
+#if [ ! -f /etc/letsencrypt/live/www.wisemover.co.uk/fullchain.pem ]; then
+#	email=malcolmmorgan02@
+#	email+=gmail.com
+#	certbot --agree-tos --no-eff-email certonly --keep-until-expiring --webroot -w /var/www/wisemove/ --email $email -d www.wisemover.co.uk -d wisemover.co.uk
+#	service apache2 restart
+#fi
 
 # Clone or update repo
 if [ ! -d /var/www/wisemove/.git/ ]; then
