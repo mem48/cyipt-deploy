@@ -106,10 +106,10 @@ mkdir -p /var/www/wisemove/
 chown -R wisemove.rollout /var/www/wisemove/
 chmod g+ws /var/www/wisemove/
 
-# Add VirtualHost
+# Add VirtualHost (but do not restart)
 cp -pr $ScriptHome/apache.conf /etc/apache2/sites-available/wisemove.conf
 a2ensite wisemove
-service apache2 restart
+
 
 # Let's Encrypt (free SSL certs), which will create a cron job
 # See: https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-14-04
@@ -119,12 +119,12 @@ apt-get update
 apt-get -y install python-certbot-apache
 
 # Create an HTTPS cert (without auto installation in Apache)
-#if [ ! -f /etc/letsencrypt/live/www.wisemover.co.uk/fullchain.pem ]; then
-#	email=malcolmmorgan02@
-#	email+=gmail.com
-#	certbot --agree-tos --no-eff-email certonly --keep-until-expiring --webroot -w /var/www/wisemove/ --email $email -d www.wisemover.co.uk -d wisemover.co.uk
-#	service apache2 restart
-#fi
+if [ ! -f /etc/letsencrypt/live/www.wisemover.co.uk/fullchain.pem ]; then
+	email=malcolmmorgan02@
+	email+=gmail.com
+	certbot --agree-tos --no-eff-email certonly --keep-until-expiring --webroot -w /var/www/wisemove/ --email $email -d www.wisemover.co.uk -d wisemover.co.uk
+	service apache2 restart
+fi
 
 # Clone or update repo
 if [ ! -d /var/www/wisemove/.git/ ]; then
