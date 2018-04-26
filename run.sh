@@ -1,9 +1,9 @@
 #!/bin/bash
-# Installs the CyIPT system
+# Installs the WiseMove system
 
 ### Stage 1 - general setup
 
-echo "#	CyIPT: install system"
+echo "#	WiseMove: install system"
 
 # Ensure this script is run as root
 if [ "$(id -u)" != "0" ]; then
@@ -15,7 +15,7 @@ fi
 set -e
 
 # Lock directory
-lockdir=/var/lock/cyipt_outer
+lockdir=/var/lock/wisemove_outer
 mkdir -p $lockdir
 
 # Set a lock file; see: http://stackoverflow.com/questions/7057234/bash-flock-exit-if-cant-acquire-lock/7057385
@@ -52,7 +52,7 @@ fi
 . $configFile
 
 # Announce starting
-echo "# CyIPT system installation $(date)"
+echo "# WiseMove system installation $(date)"
 
 
 ## Main body
@@ -88,9 +88,9 @@ apt-get -y install postgresql postgresql-contrib
 apt-get -y install php7.1-pgsql
 
 # Install PostgreSQL database and user
-# Check connectivity using: `psql -h localhost cyipt cyipt -W` (where this is `psql database user`); -h localhost is needed to avoid "Peer authentication failed" error
-database=cyipt
-username=cyipt
+# Check connectivity using: `psql -h localhost wisemove wisemove -W` (where this is `psql database user`); -h localhost is needed to avoid "Peer authentication failed" error
+database=wisemove
+username=wisemove
 su - postgres -c "psql -tAc \"SELECT 1 FROM pg_roles WHERE rolname='${username}';\"" | grep -q 1 || su - postgres -c "psql -c \"CREATE USER ${username} WITH PASSWORD '${password}';\""
 su - postgres -c "psql -tAc \"SELECT 1 from pg_catalog.pg_database where datname = '${database}';\"" | grep -q 1 || su - postgres -c "createdb -O ${username} ${database}"
 # Privileges should not be needed: "By default all public scemas will be available for regular (non-superuser) users." - https://stackoverflow.com/a/42748915/180733
@@ -102,13 +102,13 @@ apt-get -y install postgis
 su - postgres -c "psql -d ${database} -tAc \"CREATE EXTENSION postgis;\""
 
 # Create site files directory
-mkdir -p /var/www/cyipt/
-chown -R cyipt.rollout /var/www/cyipt/
-chmod g+ws /var/www/cyipt/
+mkdir -p /var/www/wisemove/
+chown -R wisemove.rollout /var/www/wisemove/
+chmod g+ws /var/www/wisemove/
 
 # Add VirtualHost
-cp -pr $ScriptHome/apache.conf /etc/apache2/sites-available/cyipt.conf
-a2ensite cyipt
+cp -pr $ScriptHome/apache.conf /etc/apache2/sites-available/wisemove.conf
+a2ensite wisemove
 service apache2 restart
 
 # Let's Encrypt (free SSL certs), which will create a cron job
@@ -119,27 +119,27 @@ apt-get update
 apt-get -y install python-certbot-apache
 
 # Create an HTTPS cert (without auto installation in Apache)
-if [ ! -f /etc/letsencrypt/live/www.cyipt.bike/fullchain.pem ]; then
-	email=info@
-	email+=cyclestreets.net
-	certbot --agree-tos --no-eff-email certonly --keep-until-expiring --webroot -w /var/www/cyipt/ --email $email -d www.cyipt.bike -d cyipt.bike
+if [ ! -f /etc/letsencrypt/live/www.wisemover.co.uk/fullchain.pem ]; then
+	email=malcolmmorgan02@
+	email+=gmail.com
+	certbot --agree-tos --no-eff-email certonly --keep-until-expiring --webroot -w /var/www/wisemove/ --email $email -d www.wisemover.co.uk -d wisemover.co.uk
 	service apache2 restart
 fi
 
 # Clone or update repo
-if [ ! -d /var/www/cyipt/.git/ ]; then
-	sudo -u cyipt  git clone https://github.com/cyipt/cyipt-website.git /var/www/cyipt/
-	sudo -u cyipt  git clone https://github.com/cyclestreets/Leaflet.LayerViewer.git /var/www/cyipt/js/lib/Leaflet.LayerViewer/
+if [ ! -d /var/www/wisemove/.git/ ]; then
+	sudo -u wisemove  git clone https://github.com/mem48/wisemove-website.git /var/www/wisemove/
+	sudo -u wisemove  git clone https://github.com/cyclestreets/Leaflet.LayerViewer.git /var/www/wisemove/js/lib/Leaflet.LayerViewer/
 else
-	sudo -u cyipt  git -C /var/www/cyipt/ pull
-	sudo -u cyipt  git -C /var/www/cyipt/js/lib/Leaflet.LayerViewer/ pull
+	sudo -u wisemove  git -C /var/www/wisemove/ pull
+	sudo -u wisemove  git -C /var/www/wisemove/js/lib/Leaflet.LayerViewer/ pull
 fi
-chmod -R g+w /var/www/cyipt/
+chmod -R g+w /var/www/wisemove/
 
 # Add cronjob to update from Git regularly
-cp $ScriptHome/cyipt.cron /etc/cron.d/cyipt
-chown root.root /etc/cron.d/cyipt
-chmod 644 /etc/cron.d/cyipt
+cp $ScriptHome/wisemove.cron /etc/cron.d/wisemove
+chown root.root /etc/cron.d/wisemove
+chmod 644 /etc/cron.d/wisemove
 
 # Add mailserver
 # Exim
@@ -151,7 +151,7 @@ if [ ! -e /etc/exim4/update-exim4.conf.conf.original ]; then
 	cp -pr /etc/exim4/update-exim4.conf.conf /etc/exim4/update-exim4.conf.conf.original
 	# NB These will deliberately overwrite any existing config; it is assumed that once set, the config will only be changed via this setup script (as otherwise it is painful during testing)
 	sed -i "s/dc_eximconfig_configtype=.*/dc_eximconfig_configtype='internet'/" /etc/exim4/update-exim4.conf.conf
-	sed -i "s/dc_other_hostnames=.*/dc_other_hostnames='cyipt.bike'/" /etc/exim4/update-exim4.conf.conf
+	sed -i "s/dc_other_hostnames=.*/dc_other_hostnames='wisemover.co.uk'/" /etc/exim4/update-exim4.conf.conf
 	sed -i "s/dc_local_interfaces=.*/dc_local_interfaces=''/" /etc/exim4/update-exim4.conf.conf
 	update-exim4.conf
 	service exim4 start
@@ -172,7 +172,7 @@ ufw reload
 ufw status verbose
 
 # Report completion
-echo "#	Installing CyIPT system completed"
+echo "#	Installing WiseMove system completed"
 
 # Remove the lock file - ${0##*/} extracts the script's basename
 ) 900>$lockdir/${0##*/}
