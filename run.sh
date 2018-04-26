@@ -74,7 +74,7 @@ apt-get -y install apache2 apache2-utils
 a2enmod rewrite
 a2enmod headers
 a2enmod ssl
-service apache2 restart
+#service apache2 restart
 
 # Install PHP (7.1, using the Ondřej Surý -maintained packages)
 apt-get install -y python-software-properties
@@ -119,12 +119,12 @@ apt-get update
 apt-get -y install python-certbot-apache
 
 # Create an HTTPS cert (without auto installation in Apache)
-#if [ ! -f /etc/letsencrypt/live/www.wisemover.co.uk/fullchain.pem ]; then
-#	email=malcolmmorgan02@
-#	email+=gmail.com
-#	certbot --agree-tos --no-eff-email certonly --keep-until-expiring --webroot -w /var/www/wisemove/ --email $email -d www.wisemover.co.uk -d wisemover.co.uk
-#	service apache2 restart
-#fi
+if [ ! -f /etc/letsencrypt/live/www.wisemover.co.uk/fullchain.pem ]; then
+	email=malcolmmorgan02@
+	email+=gmail.com
+	certbot --agree-tos --no-eff-email certonly --keep-until-expiring --webroot -w /var/www/wisemove/ --email $email -d www.wisemover.co.uk -d wisemover.co.uk
+	#service apache2 restart
+fi
 
 # Clone or update repo
 if [ ! -d /var/www/wisemove/.git/ ]; then
@@ -158,6 +158,8 @@ if [ ! -e /etc/exim4/update-exim4.conf.conf.original ]; then
 fi
 echo "IMPORTANT: Aliases need to be added to /etc/aliases"
 
+service apache2 restart
+
 # Enable firewall
 apt-get -y install ufw
 ufw logging low
@@ -176,5 +178,6 @@ echo "#	Installing WiseMove system completed"
 
 # Remove the lock file - ${0##*/} extracts the script's basename
 ) 900>$lockdir/${0##*/}
+
 
 # End of file
